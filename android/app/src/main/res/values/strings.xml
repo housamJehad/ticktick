@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">tick</string>
+    <string name="facebook_app_id">693563344941593</string>
+    <string name="fb_login_protocol_scheme">fb693563344941593</string>
+</resources>
