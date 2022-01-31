@@ -223,14 +223,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Text(
-                "Are you sure to make changes",
-                maxLines: 2,
-                style: TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: height * 0.025,
-                    color: MyColors.myBlack,
-                    fontWeight: FontWeight.normal),
+              FittedBox(
+                child: Text(
+                  "Make changes",
+                  maxLines: 2,
+                  style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: height * 0.025,
+                      color: MyColors.myBlack,
+                      fontWeight: FontWeight.normal),
+                ),
               ),
               const SizedBox(
                 height: 10,
