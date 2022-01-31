@@ -11,8 +11,9 @@ import 'package:tic/data_layer/models/deep_link_name.dart';
 import 'package:tic/data_layer/models/link.dart';
 import 'package:tic/presentation_layer/screens/home_screen/home_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/log_option_screen.dart';
-import 'package:tic/presentation_layer/screens/no_internet_widget/no_internet.dart';
+import 'package:tic/presentation_layer/screens/no_internet_screen/no_internet.dart';
 import 'package:tic/presentation_layer/widgets/indicator/circle)ind.dart';
+
 
 class SplashScreen extends StatefulWidget {
   final String outUri;
@@ -95,7 +96,6 @@ class _SplashScreenState extends State<SplashScreen> {
               });
             });
               return bufferWidget;
-
           } else {
             return const NoInternetWidget();
           }

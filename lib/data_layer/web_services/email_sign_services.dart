@@ -8,6 +8,7 @@ import 'package:tic/business_logic_layer/authentication/data/providers/user_prov
 import 'package:tic/data_layer/models/deep_link_name.dart';
 import 'package:tic/data_layer/models/link.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/create_account_side/user_name_screen.dart';
+import 'package:tic/presentation_layer/screens/login_creat_screens/log_in_side/login_screen2.dart';
 import 'package:tic/presentation_layer/widgets/popup/popup.dart';
 
 class EmailSignServices {
@@ -28,10 +29,11 @@ class EmailSignServices {
       {var context,
       String? email,
       String? password,
+      required UserCredential userCredential,
       String? name,
       String? phone}) async {
     if (!user!.emailVerified) {
-      await user!.sendEmailVerification().then((value) {
+      await userCredential.user!.sendEmailVerification().then((value) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -74,10 +76,11 @@ class EmailSignServices {
       String? name}) async {
     if (password!.isNotEmpty) {
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential=await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: email as String, password: password);
         verifyEmail(
           email: email,
+          userCredential: userCredential,
           name: name,
           password: password,
           phone: phone,
@@ -122,9 +125,9 @@ class EmailSignServices {
   userLogin({var context, String? email, String? password}) async {
     bool isHasUserName = false;
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential= await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email as String, password: password as String);
-      if (user!.emailVerified) {
+      if (userCredential.user!.emailVerified) {
         List<Link> links = [];
         await FirebaseFirestore.instance
             .collection('User')
@@ -222,4 +225,10 @@ class EmailSignServices {
           });
     }
   }
+  forgetPass({String ?email,context})async{
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email as String).then((value) {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>const LoginScreen2()));
+    });
+  }
+
 }

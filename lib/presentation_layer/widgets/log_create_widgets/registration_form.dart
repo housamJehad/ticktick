@@ -17,7 +17,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
+  bool isSecure=true;
 
 
 
@@ -55,7 +55,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   boxHint: "First Name",
                   boxController: firstNameController,
                   fieldType: "name",
+                  textInputType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  isHaveSuffix: false,
+                  isSecure: false,
                   onTab: () {},
+                  onPressSuffix: (){},
                   maxLines: 1,
                   readOnly: false,
                 ),
@@ -69,8 +74,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   boxHint: "Second Name",
                   boxController: secondNameController,
                   fieldType: "name",
+                  textInputType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  isHaveSuffix: false,
+                  isSecure: false,
                   maxLines: 1,
                   onTab: () {},
+                  onPressSuffix: (){},
                   readOnly: false,
                 ),
               ],
@@ -85,8 +95,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
               boxHint: "Enter email like abs@gmail.com",
               boxController: emailController,
               fieldType: "email",
+              textInputType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              isHaveSuffix: false,
+              isSecure: false,
               maxLines: 1,
               onTab: () {},
+              onPressSuffix: (){},
               readOnly: false,
             ),
             const SizedBox(
@@ -100,7 +115,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
               boxController: phoneController,
               fieldType: "phone",
               maxLines: 1,
+              textInputType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              isHaveSuffix: false,
+              isSecure: false,
               onTab: () {},
+              onPressSuffix: (){},
               readOnly: false,
             ),
             const SizedBox(
@@ -113,8 +133,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
               boxHint: "Enter password has at least 8 letters",
               boxController: passwordController,
               fieldType: "password",
+              textInputType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+              isHaveSuffix: true,
+              isSecure: isSecure,
               maxLines: 1,
               onTab: () {},
+              onPressSuffix: (){
+                setState(() {
+                  isSecure=!isSecure;
+                });
+              },
               readOnly: false,
             ),
 
@@ -131,12 +160,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     if (formkey.currentState!.validate()) {
                       EmailSignServices().registration(
                           context: context,
-                          password: passwordController.text.trim(),
-                          name: firstNameController.text.trim() +
+                          password: passwordController.text.trim().toLowerCase(),
+                          name: firstNameController.text.trim().toLowerCase() +
                               " " +
-                              secondNameController.text.trim(),
-                          email: emailController.text.trim(),
-                          phone: phoneController.text.trim());
+                              secondNameController.text.trim().toLowerCase(),
+                          email: emailController.text.trim().toLowerCase(),
+                          phone: phoneController.text.trim().toLowerCase());
                     } else {}
                   },
                   style: ElevatedButton.styleFrom(

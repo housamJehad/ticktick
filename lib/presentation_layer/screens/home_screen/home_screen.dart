@@ -30,24 +30,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int value = 0;
+  int whichScreen = 0;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   int currentScreen = 0;
-  int lastIndex = -1;
   bool isPrivate = false;
-  final Color selectedColor = MyColors.myOrange;
-  String animation = 'assets/animation/lf30_editor_p6r6h0tl.json';
-  ValueNotifier<dynamic> result = ValueNotifier(null);
-
-  @override
-  void initState() {
-    result.value = "";
-    setState(() {
-      isPrivate = Provider.of<UserProvider>(context, listen: false).status!;
-    });
-    value = widget.whichScreen;
-    super.initState();
-  }
+  final Color selectedScreenColor = MyColors.myOrange;
+  String nfcAnimation = 'assets/animation/lf30_editor_p6r6h0tl.json';
+  ValueNotifier<dynamic> nfcReadResult = ValueNotifier(null);
+  late Uri url;
 
   final List<Widget> _children = [
     const ProfileTestScreen2(),
@@ -55,21 +45,36 @@ class _HomeScreenState extends State<HomeScreen> {
     const OutLinkScreen(),
     const FriendsScreen(),
   ];
+
+
+
+  @override
+  void initState() {
+    nfcReadResult.value = "";
+    setState(() {
+      isPrivate = Provider.of<UserProvider>(context, listen: false).status!;
+    });
+    whichScreen = widget.whichScreen;
+    super.initState();
+  }
   void onItemTapped(int index) {
     if (index == 1) {
       _onPressScan();
-    }else if(index==2){
-      print(DeepLinkName.deepLinkName);
-      if(DeepLinkName.deepLinkName.isEmpty){
+    } else if (index == 2) {
+      if (DeepLinkName.deepLinkName.isEmpty) {
         setState(() {
-          value = index;
+          whichScreen = index;
         });
-      }else{
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfileLinkScreen(name:DeepLinkName.deepLinkName)));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ProfileLinkScreen(name: DeepLinkName.deepLinkName)));
       }
     } else {
       setState(() {
-        value = index;
+        whichScreen = index;
       });
     }
   }
@@ -78,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
     NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       var ndef = Ndef.from(tag);
       if (ndef == null || !ndef.isWritable) {
-        result.value = 'Tag is not ndef writable';
-        NfcManager.instance.stopSession(errorMessage: result.value);
+        nfcReadResult.value = 'Tag is not ndef writable';
+        NfcManager.instance.stopSession(errorMessage: nfcReadResult.value);
         return;
       }
       NdefMessage message = NdefMessage([
@@ -89,25 +94,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
       try {
         await ndef.write(message);
-        print("true");
         setState(() {
-          result.value = 'Success to "Ndef Write"';
+          nfcReadResult.value = 'Success to "Ndef Write"';
         });
         NfcManager.instance.stopSession();
       } catch (e) {
-        result.value = e;
-        NfcManager.instance.stopSession(errorMessage: result.value.toString());
+        nfcReadResult.value = e;
+        NfcManager.instance.stopSession(errorMessage: nfcReadResult.value.toString());
         return;
       }
     });
   }
 
-  late Uri url;
-
   _onPressScan() async {
     setState(() {
-      animation = 'assets/animation/lf30_editor_p6r6h0tl.json';
-      result.value = "";
+      nfcAnimation = 'assets/animation/lf30_editor_p6r6h0tl.json';
+      nfcReadResult.value = "";
     });
     _ndefWrite();
     return showModalBottomSheet(
@@ -141,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: height * 0.3,
                               child: Center(
                                 child: Lottie.asset(
-                                  animation,
+                                  nfcAnimation,
                                   repeat: true,
                                   reverse: true,
                                   animate: true,
@@ -268,13 +270,13 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: MyColors.myBlack,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
-            currentIndex: value,
-            unselectedItemColor: selectedColor,
+            currentIndex: whichScreen,
+            unselectedItemColor: selectedScreenColor,
             selectedItemColor: MyColors.myWhite,
             onTap: onItemTapped,
           ),
         ),
-        body: _children[value]);
+        body: _children[whichScreen]);
   }
 
   Widget _drawerOption(String optionName, double width, double height,
@@ -282,51 +284,74 @@ class _HomeScreenState extends State<HomeScreen> {
     String? loginType =
         Provider.of<UserProvider>(context, listen: false).loginType;
     return InkWell(
-      onTap:cIndex==currentScreen?(){}:cIndex==0?(){
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>const HomeScreen(whichScreen: 0)));
-      }:cIndex==1?(){
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>const HelpScreen()));
-      }:cIndex==2?(){
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>const AboutUsScreen()));
-      }: loginType == "Google"
-          ? () async {
-              await GoogleService().signOutGoogle(context).then((value) async {
-                removeProviderData(context);
-                final SharedPreferences sharedPreferences =
-                    await SharedPreferences.getInstance();
-                sharedPreferences.remove('docId');
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        const LogOptionScreen()));
-              });
-            }
-          : loginType == "email"
-              ? () async {
-                  await EmailSignServices()
-                      .userLogOut(context)
-                      .then((value) async {
-                    removeProviderData(context);
-                    final SharedPreferences sharedPreferences =
-                        await SharedPreferences.getInstance();
-                    sharedPreferences.remove('docId');
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const LogOptionScreen()));
-                  });
+      onTap: cIndex == currentScreen
+          ? () {}
+          : cIndex == 0
+              ? () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const HomeScreen(whichScreen: 0)));
                 }
-              : () async {
-                  await FacebookSignServices()
-                      .signOutGoogle()
-                      .then((value) async {
-                    removeProviderData(context);
-                    final SharedPreferences sharedPreferences =
-                        await SharedPreferences.getInstance();
-                    sharedPreferences.remove('docId');
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const LogOptionScreen()));
-                  });
-                },
+              : cIndex == 1
+                  ? () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HelpScreen()));
+                    }
+                  : cIndex == 2
+                      ? () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AboutUsScreen()));
+                        }
+                      : loginType == "Google"
+                          ? () async {
+                              await GoogleService()
+                                  .signOutGoogle(context)
+                                  .then((value) async {
+                                removeProviderData(context);
+                                final SharedPreferences sharedPreferences =
+                                    await SharedPreferences.getInstance();
+                                await sharedPreferences.remove('docId');
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const LogOptionScreen()));
+                              });
+                            }
+                          : loginType == "email"
+                              ? () async {
+                                  await EmailSignServices()
+                                      .userLogOut(context)
+                                      .then((value) async {
+                                    removeProviderData(context);
+                                    final SharedPreferences sharedPreferences =
+                                        await SharedPreferences.getInstance();
+                                    await sharedPreferences.remove('docId');
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const LogOptionScreen()));
+                                  });
+                                }
+                              : () async {
+                                  await FacebookSignServices()
+                                      .signOutGoogle()
+                                      .then((value) async {
+                                    removeProviderData(context);
+                                    final SharedPreferences sharedPreferences =
+                                        await SharedPreferences.getInstance();
+                                    await sharedPreferences.remove('docId');
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const LogOptionScreen()));
+                                  });
+                                },
       child: Container(
         margin: EdgeInsets.only(bottom: height * 0.02),
         height: height * 0.1,
@@ -384,6 +409,4 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UserProvider>(context, listen: false).userNameLink = "";
     });
   }
-
 }
-

@@ -29,12 +29,6 @@ class TickApp extends StatefulWidget {
 
 class _TickAppState extends State<TickApp> {
 
-  // static PlatformRouteInformationProvider routeInformationProvider=PlatformRouteInformationProvider(
-  //     initialRouteInformation: RouteInformation(
-  //         location: PlatformDispatcher.instance.defaultRouteName
-  //     )
-  // );
-
   String userName = "";
   String finalDocId = "";
 
@@ -46,18 +40,7 @@ class _TickAppState extends State<TickApp> {
     getExistData();
   }
 
-  Future getExistData() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    String? docId = sharedPreferences.getString("docId");
-    setState(() {
-      if (docId == null) {
-        finalDocId = "";
-      } else {
-        finalDocId = docId;
-      }
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -99,5 +82,17 @@ class _TickAppState extends State<TickApp> {
     } on Exception {
       print('Exception thrown');
     }
+  }
+  Future getExistData() async {
+    final SharedPreferences sharedPreferences =
+    await SharedPreferences.getInstance();
+    String? docId = sharedPreferences.getString("docId");
+    setState(() {
+      if (docId == null) {
+        finalDocId = "";
+      } else {
+        finalDocId = docId;
+      }
+    });
   }
 }

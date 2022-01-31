@@ -6,8 +6,12 @@ class FieldBox extends StatefulWidget {
   final String boxName, boxHint, fieldType;
   final int maxLines;
   final bool readOnly;
-  final VoidCallback onTab;
+  final VoidCallback onTab,onPressSuffix;
   final TextEditingController boxController;
+  final bool isSecure;
+  final bool isHaveSuffix;
+  final TextInputType textInputType;
+  final TextInputAction textInputAction;
   const FieldBox(
       {Key? key,
       required this.width,
@@ -18,7 +22,12 @@ class FieldBox extends StatefulWidget {
       required this.fieldType,
       required this.maxLines,
       required this.onTab,
-      required this.readOnly})
+      required this.readOnly,
+      required this.isSecure,
+      required this.isHaveSuffix,
+      required this.textInputType,
+      required this.onPressSuffix,
+      required this.textInputAction})
       : super(key: key);
 
   @override
@@ -68,31 +77,79 @@ class _FieldBoxState extends State<FieldBox> {
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: TextFormField(
-                              readOnly: widget.readOnly,
-                              maxLines: widget.maxLines,
-                              controller: widget.boxController,
-                              cursorColor: MyColors.myBlack,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: widget.boxHint),
-                              validator: widget.fieldType == "email"
-                                  ? (String? text) {
-                                      String fullText = text as String;
-                                      if (fullText.isEmpty) {
-                                        setState(() {
-                                          errorMessage = "*Required";
-                                        });
-                                      } else {
-                                        Pattern pattern =
-                                            r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                            r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                            r"{0,253}[a-zA-Z0-9])?)$";
-                                        RegExp regex =
-                                            RegExp(pattern as String);
-                                        if (!regex.hasMatch(fullText)) {
+                        readOnly: widget.readOnly,
+                        maxLines: widget.maxLines,
+                        controller: widget.boxController,
+                        cursorColor: MyColors.myBlack,
+                          textAlign: TextAlign.left,
+                          obscuringCharacter: "*",
+                          obscureText: widget.isSecure,
+                          keyboardType: widget.textInputType,
+                          textInputAction: widget.textInputAction,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: widget.boxHint,
+                            suffixIconConstraints:
+                            BoxConstraints(maxHeight: height * 0.25),
+                            suffixIcon: widget.isHaveSuffix
+                                ? IconButton(
+                              icon: Icon(
+                                widget.isSecure
+                                    ? Icons.visibility_off_sharp
+                                    : Icons.visibility,
+                                size: height * 0.29,
+                                color: widget.isSecure
+                                    ? Colors.black38
+                                    : Colors.black,
+                              ),
+                              onPressed: widget.onPressSuffix,
+                              padding: EdgeInsets.zero,
+                            )
+                                : const SizedBox(),
+                      ),
+                        validator: widget.fieldType == "email"
+                            ? (String? text) {
+                                String fullText = text as String;
+                                if (fullText.isEmpty) {
+                                  setState(() {
+                                    errorMessage = "*Required";
+                                  });
+                                } else {
+                                  Pattern pattern =
+                                      r"^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                                      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                                      r"{0,253}[a-zA-Z0-9])?)$";
+                                  RegExp regex = RegExp(pattern as String);
+                                  if (!regex.hasMatch(fullText)) {
+                                    setState(() {
+                                      errorMessage =
+                                          'Enter a valid email address';
+                                    });
+                                  } else {
+                                    setState(() {
+                                      errorMessage = "";
+                                    });
+                                  }
+                                }
+                              }
+                            : widget.fieldType == "gender"
+                                ? (String? text) {
+                                    if (widget.boxHint ==
+                                        "Press to choose your gender") {
+                                      setState(() {
+                                        errorMessage = "*Required";
+                                      });
+                                    } else {
+                                      setState(() {
+                                        errorMessage = "";
+                                      });
+                                    }
+                                  }
+                                : widget.fieldType == "birth"
+                                    ? (String? text) {
+                                        if (widget.boxHint == "dd/mm/yyyy") {
                                           setState(() {
-                                            errorMessage =
-                                                'Enter a valid email address';
+                                            errorMessage = "*Required";
                                           });
                                         } else {
                                           setState(() {
@@ -100,145 +157,145 @@ class _FieldBoxState extends State<FieldBox> {
                                           });
                                         }
                                       }
-                                    }
-                                  :widget.fieldType=="gender"?(String? text){
-                                 if(widget.boxHint=="Press to choose your gender"){
-                                   setState(() {
-                                     errorMessage="*Required";
-                                   });
-                                 }else{
-                                   setState(() {
-                                     errorMessage="";
-                                   });
-                                 }
-                              }:widget.fieldType=="birth"?(String? text){
-                                if(widget.boxHint=="dd/mm/yyyy"){
-                                  setState(() {
-                                    errorMessage="*Required";
-                                  });
-                                }else{
-                                  setState(() {
-                                    errorMessage="";
-                                  });
-                                }
-                              }:widget.fieldType=="userName"?(String? text){
-                                String fullText=text as String;
-                                fullText=fullText.trim();
-                                if(fullText.isEmpty){
-                                  setState(() {
-                                    errorMessage="*Required";
-                                  });
-                                }else{
-                                  if(fullText.length>15){
-                                    setState(() {
-                                      errorMessage="Enter at most 15 letters";
-                                    });
-                                  } else if(fullText.length<3){
-                                    setState(() {
-                                      errorMessage="Enter at least 3 letters";
-                                    });
-                                  }else{
-                                    if(fullText.length>3){
-                                      bool hasSpace=false;
-                                      for(int i=0;i<fullText.length;i++){
-                                        if(fullText[i]==" "){
-                                          setState(() {
-                                            errorMessage="Enter username without space";
-                                            hasSpace=true;
-                                          });
-                                          break;
-                                        }
-                                      }
-                                      if(hasSpace){
-                                        setState(() {
-                                          errorMessage="Enter username without space";
-                                        });
-                                      }else{
-                                        setState(() {
-                                          errorMessage="";
-                                        });
-                                      }
-                                    }
-                                  }
-                                }
-                              }:widget.fieldType=="bio"?(String? text){
-                                String fullText=text as String;
-                                fullText=fullText.trim();
-                                if(fullText.isEmpty){
-                                  errorMessage = "*Required";
-                                }else if(fullText.length<3){
-                                 setState(() {
-                                   errorMessage = "Enter at least 3 letters";
-                                 });
-                                }else if(fullText.length>20){
-                                  setState(() {
-                                    errorMessage = "Enter at most 20 letters";
-                                  });
-                                }else{
-                                  setState(() {
-                                    errorMessage="";
-                                  });
-                                }
-                              }: (String? text) {
-                                      String fullText = text as String;
-                                      if (fullText.isEmpty) {
-                                        setState(() {
-                                          errorMessage = "*Required";
-                                        });
-                                      } else {
-                                        if (widget.fieldType == "name") {
-                                          if (fullText.length < 3) {
-                                            setState(() {
-                                              errorMessage =
-                                                  "Enter at least 3 letters";
-                                            });
-                                          } else if (fullText.length > 10) {
-                                            setState(() {
-                                              errorMessage =
-                                                  "Enter at most 10 letters";
-                                            });
-                                          } else {
-                                            setState(() {
-                                              errorMessage = "";
-                                            });
+                                    : widget.fieldType == "userName"
+                                        ? (String? text) {
+                                            String fullText = text as String;
+                                            fullText = fullText.trim();
+                                            if (fullText.isEmpty) {
+                                              setState(() {
+                                                errorMessage = "*Required";
+                                              });
+                                            } else {
+                                              if (fullText.length > 15) {
+                                                setState(() {
+                                                  errorMessage =
+                                                      "Enter at most 15 letters";
+                                                });
+                                              } else if (fullText.length < 3) {
+                                                setState(() {
+                                                  errorMessage =
+                                                      "Enter at least 3 letters";
+                                                });
+                                              } else {
+                                                if (fullText.length > 3) {
+                                                  bool hasSpace = false;
+                                                  for (int i = 0;
+                                                      i < fullText.length;
+                                                      i++) {
+                                                    if (fullText[i] == " ") {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter username without space";
+                                                        hasSpace = true;
+                                                      });
+                                                      break;
+                                                    }
+                                                  }
+                                                  if (hasSpace) {
+                                                    setState(() {
+                                                      errorMessage =
+                                                          "Enter username without space";
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      errorMessage = "";
+                                                    });
+                                                  }
+                                                }
+                                              }
+                                            }
                                           }
-                                        } else if (widget.fieldType ==
-                                            "phone") {
-                                          if (fullText.length < 10) {
-                                            setState(() {
-                                              errorMessage = "Enter 10 number";
-                                            });
-                                          } else if (fullText.length > 10) {
-                                            setState(() {
-                                              errorMessage =
-                                                  "Enter at most 10 letters";
-                                            });
-                                          } else {
-                                            setState(() {
-                                              errorMessage = "";
-                                            });
-                                          }
-                                        } else if (widget.fieldType ==
-                                            'password') {
-                                          if (fullText.length < 8) {
-                                            setState(() {
-                                              errorMessage =
-                                                  "Enter at least 8 letters or numbers";
-                                            });
-                                          } else if (fullText.length > 15) {
-                                            setState(() {
-                                              errorMessage =
-                                                  "Enter at most 15 letters or numbers";
-                                            });
-                                          } else {
-                                            setState(() {
-                                              errorMessage = "";
-                                            });
-                                          }
-                                        }
-                                      }
-                                    },
-                            ),
+                                        : widget.fieldType == "bio"
+                                            ? (String? text) {
+                                                String fullText =
+                                                    text as String;
+                                                fullText = fullText.trim();
+                                                if (fullText.isEmpty) {
+                                                  errorMessage = "*Required";
+                                                } else if (fullText.length <
+                                                    3) {
+                                                  setState(() {
+                                                    errorMessage =
+                                                        "Enter at least 3 letters";
+                                                  });
+                                                } else if (fullText.length >
+                                                    20) {
+                                                  setState(() {
+                                                    errorMessage =
+                                                        "Enter at most 20 letters";
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    errorMessage = "";
+                                                  });
+                                                }
+                                              }
+                                            : (String? text) {
+                                                String fullText =
+                                                    text as String;
+                                                if (fullText.isEmpty) {
+                                                  setState(() {
+                                                    errorMessage = "*Required";
+                                                  });
+                                                } else {
+                                                  if (widget.fieldType ==
+                                                      "name") {
+                                                    if (fullText.length < 3) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter at least 3 letters";
+                                                      });
+                                                    } else if (fullText.length >
+                                                        10) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter at most 10 letters";
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        errorMessage = "";
+                                                      });
+                                                    }
+                                                  } else if (widget.fieldType ==
+                                                      "phone") {
+                                                    if (fullText.length < 10) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter 10 number";
+                                                      });
+                                                    } else if (fullText.length >
+                                                        10) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter at most 10 letters";
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        errorMessage = "";
+                                                      });
+                                                    }
+                                                  } else if (widget.fieldType ==
+                                                      'password') {
+                                                    if (fullText.length < 8) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter at least 8 letters or numbers";
+                                                      });
+                                                    } else if (fullText.length >
+                                                        15) {
+                                                      setState(() {
+                                                        errorMessage =
+                                                            "Enter at most 15 letters or numbers";
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        errorMessage = "";
+                                                      });
+                                                    }
+                                                  }
+                                                }
+                                              },
+                      ),
                     ),
                   ),
                 ),

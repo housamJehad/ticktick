@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/services.dart';
 import 'package:tic/constant/my_colors.dart';
 import 'package:tic/data_layer/web_services/email_sign_services.dart';
-import 'package:tic/presentation_layer/screens/login_creat_screens/log_in_side/forget_pass_screen.dart';
 import 'package:tic/presentation_layer/widgets/log_create_widgets/field_box.dart';
-import 'package:tic/presentation_layer/widgets/log_create_widgets/option_button.dart';
 
-class LoginScreen2 extends StatefulWidget {
-  const LoginScreen2({Key? key}) : super(key: key);
+class ForgetPassScreen extends StatefulWidget {
+  const ForgetPassScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreen2State createState() => _LoginScreen2State();
+  _ForgetPassScreenState createState() => _ForgetPassScreenState();
 }
 
-class _LoginScreen2State extends State<LoginScreen2> {
+class _ForgetPassScreenState extends State<ForgetPassScreen> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool isSecure=true;
+  bool isSecure = true;
+  void onPasswordPress() {
+    setState(() {
+      isSecure = !isSecure;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -31,30 +34,30 @@ class _LoginScreen2State extends State<LoginScreen2> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              height: height * 0.3,
+              height: height * 0.4,
               decoration: const BoxDecoration(
                 color: MyColors.myBlack,
                 borderRadius:
-                    BorderRadius.only(bottomRight: Radius.circular(60)),
+                BorderRadius.only(bottomRight: Radius.circular(60)),
               ),
               child: Center(
                 child: Container(
                   width: width,
-                  height: height * 0.12,
+                  height: height * 0.14,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
-                    image: AssetImage("assets/images/tickLogo2.png"),
-                  )),
+                          image: AssetImage("assets/images/tickLogo2.png"),
+                      )),
                 ),
               ),
             ),
             Container(
-              height: height * 0.7,
-              color: MyColors.myBlack,
+              height: height * 0.6,
+              color: Colors.black,
               child: Column(
                 children: [
                   Container(
-                    height: height * 0.61,
+                    height: height * 0.5,
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
                     decoration: BoxDecoration(
@@ -64,7 +67,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
                             topLeft: Radius.circular(60),
                             bottomRight: Radius.circular(60))),
                     child:
-                        SingleChildScrollView(child: loginForm(width, height)),
+                    SingleChildScrollView(child: loginForm(width, height)),
                   ),
                   Container(
                     color: MyColors.myWhite,
@@ -97,8 +100,8 @@ class _LoginScreen2State extends State<LoginScreen2> {
                                 width: width * 0.19,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.pushReplacementNamed(
-                                          context, '/createAccount2');
+                                      Navigator.pushNamed(
+                                          context, '/createAccount');
                                     },
                                     style: ElevatedButton.styleFrom(
                                         primary: Colors.white,
@@ -141,10 +144,10 @@ class _LoginScreen2State extends State<LoginScreen2> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              height: height * 0.02,
+              height: height * 0.05,
             ),
             Text(
-              "Login Option",
+              "Forget Password",
               style: TextStyle(
                   color: MyColors.myBlack,
                   fontSize: height * 0.03,
@@ -152,139 +155,51 @@ class _LoginScreen2State extends State<LoginScreen2> {
                   fontWeight: FontWeight.w600),
             ),
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
             FieldBox(
               width: width,
               height: height * 0.12,
               boxName: "Email",
+              fieldType: 'email',
               boxHint: "Enter email like abs@gmail.com",
               boxController: emailController,
-              fieldType: "email",
-              textInputType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              isHaveSuffix: false,
-              isSecure: false,
-              maxLines: 1,
-              onTab: (){},
-              onPressSuffix: (){},
-              readOnly: false,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            FieldBox(
-              width: width,
-              height: height * 0.12,
-              boxName: "Password",
-              boxHint: "Enter password has at least 1 capital letter",
-              boxController: passwordController,
-              fieldType: "password",
               textInputType: TextInputType.text,
               textInputAction: TextInputAction.done,
-              isHaveSuffix: true,
-              isSecure: isSecure,
-              maxLines: 1,
-              onTab: (){},
-              onPressSuffix: (){
-                setState(() {
-                  isSecure=!isSecure;
-                });
-              },
               readOnly: false,
+              isSecure: false,
+              isHaveSuffix: false,
+              maxLines: 1,
+              onTab: () {},
+              onPressSuffix: (){},
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            FittedBox(
-              child: Row(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      height: height * 0.06,
-                      width: width * 0.5,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (formkey.currentState!.validate()) {
-                            EmailSignServices().userLogin(context: context,email: emailController.text.trim().toLowerCase(),password: passwordController.text);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                            primary: MyColors.myBlack, elevation: 0),
-                        child: Text(
-                          "E-mail Login",
-                          style: TextStyle(
-                            color: MyColors.myWhite,
-                            fontSize: height * 0.025,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>const ForgetPassScreen()));
-                      },
-                      child: Text(
-                        "Forget password ?",
-                        style: TextStyle(
-                          color: MyColors.myBlack,
-                          fontSize: height * 0.025,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: width * 0.4,
-                  height: 1,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: MyColors.myBlack,
+            SizedBox(height: height*0.02,),
+            Center(
+              child: SizedBox(
+                height: height * 0.06,
+                width: width *0.85,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (formkey.currentState!.validate()) {
+                      EmailSignServices().forgetPass(email: emailController.text.trim(),context: context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      primary: MyColors.myBlack,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                  child: Text(
+                    "Send email to reset pass",
+                    style: TextStyle(
+                      color: MyColors.myWhite,
+                      fontSize: height * 0.025,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
-                const Text("OR"),
-                Container(
-                  width: width * 0.4,
-                  height: 1,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: MyColors.myBlack,
-                    ),
-                  ),
-                )
-              ],
+              ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const OptionButton(
-              optionText: "Google Login",
-              optionIcon: FontAwesomeIcons.google,
-              optionType: 1,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const OptionButton(
-              optionText: "Facebook Login",
-              optionIcon: FontAwesomeIcons.facebook,
-              optionType: 0,
-            )
           ],
         ),
       ),
