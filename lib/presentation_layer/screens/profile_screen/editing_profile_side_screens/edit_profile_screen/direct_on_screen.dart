@@ -110,11 +110,11 @@ class _DirectOnScreenState extends State<DirectOnScreen> {
               });
         }else{
           Navigator.of(context)
-              .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+              .pushNamed('/home',);
         }
       } else if(!isCheck){
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+            .pushNamed('/home',);
       }
     }
 
@@ -227,16 +227,16 @@ class _DirectOnScreenState extends State<DirectOnScreen> {
                         Map<String,dynamic>buffer={links[changedIndex].type:links[changedIndex].link};
                         await FirebaseFirestore.instance.collection('User').doc(Provider.of<UserProvider>(context,listen: false).uid).update({
                           'directOn':buffer,'isDirect':true
-                        }).then((value) =>Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/home', (Route<dynamic> route) => false)
+                        }).then((value) =>Navigator.of(context).pushNamed(
+                            '/home')
                         );
                       }else if(type=="select"){
                         Navigator.of(context).pop();
                       }else{
                         await FirebaseFirestore.instance.collection('User').doc(Provider.of<UserProvider>(context,listen: false).uid).update({
                           'directOn': {},'isDirect':false
-                        }).then((value) =>Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/home', (Route<dynamic> route) => false)
+                        }).then((value) =>Navigator.of(context).pushNamed(
+                            '/home',)
                         );
                       }
                     },
@@ -258,8 +258,8 @@ class _DirectOnScreenState extends State<DirectOnScreen> {
                   ),
                   type=="select"?const SizedBox():ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/home', (Route<dynamic> route) => false);
+                      Navigator.of(context).pushNamed(
+                          '/home',);
                     },
                     child: Text(
                       "Don't save",

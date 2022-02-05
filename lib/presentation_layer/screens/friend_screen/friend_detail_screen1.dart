@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tic/business_logic_layer/authentication/data/providers/income_friend_provider.dart';
 import 'package:tic/business_logic_layer/authentication/data/providers/user_provider.dart';
 import 'package:tic/constant/my_colors.dart';
 import 'package:tic/controllers/link_launcher.dart';
@@ -93,16 +94,17 @@ class _FriendDetailScreen1State extends State<FriendDetailScreen1> {
           backgroundColor: MyColors.myBlack,
           elevation: 0,
           leading: !isWeb
-              ? Builder(
-                  builder: (context) => IconButton(
+              ?  IconButton(
                         icon: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) =>const HomeScreen(whichScreen:3)));
-                        },
-                      ))
+                          setState(() {
+                            Provider.of<IncomeFriend>(context,listen: false).friendUserName="";
+                          });
+                          Navigator.of(context).pushNamed("/home");
+                        },)
               : const SizedBox(),
           actions: [
             IconButton(
@@ -122,11 +124,11 @@ class _FriendDetailScreen1State extends State<FriendDetailScreen1> {
         ),
         body: WillPopScope(
           onWillPop: () async {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const HomeScreen(whichScreen: 3)),
-                (route) => false);
+            setState(() {
+              Provider.of<IncomeFriend>(context,listen: false).friendUserName="";
+            });
+            Navigator.of(context).pushNamed("/home");
+
             return true;
           },
           child: widget.friendData.status as bool
@@ -421,8 +423,7 @@ class _FriendDetailScreen1State extends State<FriendDetailScreen1> {
                                         "${Provider.of<UserProvider>(context, listen: false).uid}")
                                     .update(
                                   {"friends": friendIds},
-                                ).then((value) => Navigator.
-                                        pushReplacement(context, MaterialPageRoute(builder: (context)=>const HomeScreen(whichScreen: 3))));
+                                ).then((value) => Navigator.of(context).pushNamed("/home"));
                               },
                     child: FittedBox(
                       child: Text(

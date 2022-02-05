@@ -37,7 +37,7 @@ class EmailSignServices {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const PopUp(errorText: "Verification email sent");
+              return const PopUp(errorText: "Verification email sent",type: "error",anotherArguments: "",);
             });
       });
     }
@@ -91,13 +91,13 @@ class EmailSignServices {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return const PopUp(errorText: "Weak password");
+                return const PopUp(errorText: "Weak password",type: "error",anotherArguments: "",);
               });
         } else if (error.code == 'email-already-in-use') {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return const PopUp(errorText: "Email already in use");
+                return const PopUp(errorText: "Email already in use",type: "error",anotherArguments: "",);
               });
         }
       }
@@ -105,7 +105,7 @@ class EmailSignServices {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return const PopUp(errorText: "Fill the require");
+            return const PopUp(errorText: "Fill the require",type: "error",anotherArguments: "",);
           });
     }
   }
@@ -117,7 +117,7 @@ class EmailSignServices {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return const PopUp(errorText: "Log out fail");
+            return const PopUp(errorText: "Log out fail",type:"error",anotherArguments: "",);
           });
     }
   }
@@ -193,7 +193,7 @@ class EmailSignServices {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const PopUp(errorText: "Verification email was sent");
+              return const PopUp(errorText: "Verification email was sent",type: "error",anotherArguments: "",);
             });
         return false;
       }
@@ -202,13 +202,13 @@ class EmailSignServices {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const PopUp(errorText: "No user found for this email");
+              return const PopUp(errorText: "No user found for this email",type: "error",anotherArguments: "",);
             });
       } else if (error.code == 'wrong-password') {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const PopUp(errorText: "Wrong Password");
+              return const PopUp(errorText: "Wrong Password",type: "error",anotherArguments: "",);
             });
       }
       return false;
@@ -221,7 +221,7 @@ class EmailSignServices {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return const PopUp(errorText: "Verification email sent");
+            return const PopUp(errorText: "Verification email sent",type: "error",anotherArguments: "",);
           });
     }
   }

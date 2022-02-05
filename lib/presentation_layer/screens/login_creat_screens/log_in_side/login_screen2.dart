@@ -97,8 +97,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
                                 width: width * 0.19,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.pushReplacementNamed(
-                                          context, '/createAccount2');
+                                      Navigator.of(context).pushNamed('/createAccount2');
                                     },
                                     style: ElevatedButton.styleFrom(
                                         primary: Colors.white,
@@ -225,7 +224,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>const ForgetPassScreen()));
+                        Navigator.of(context).pushNamed("/forget");
                       },
                       child: Text(
                         "Forget password ?",

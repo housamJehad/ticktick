@@ -90,7 +90,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 width: width * 0.19,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.pushReplacementNamed(context, '/login2');
+                                      Navigator.of(context).pushNamed('/login2');
                                       },
                                     style: ElevatedButton.styleFrom(
                                         primary: Colors.white,

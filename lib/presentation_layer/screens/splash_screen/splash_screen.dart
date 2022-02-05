@@ -12,6 +12,7 @@ import 'package:tic/data_layer/models/link.dart';
 import 'package:tic/presentation_layer/screens/home_screen/home_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/log_option_screen.dart';
 import 'package:tic/presentation_layer/screens/no_internet_screen/no_internet.dart';
+import 'package:tic/presentation_layer/screens/profile_link_screen/profile_link_screen.dart';
 import 'package:tic/presentation_layer/widgets/indicator/circle)ind.dart';
 
 
@@ -27,6 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget bufferWidget = const CircleInd();
   bool isHasIncomeLink=false;
   String finalUserName="";
+
+
   Future getExistData(context) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
@@ -40,17 +43,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
     getExistData(context);
-    if(widget.outUri.isEmpty){
-      setState(() {
-        Provider.of<IncomeFriend>(context,listen: false).friendUserName="";
-      });
-    }else{
-      setState(() {
-        Provider.of<IncomeFriend>(context,listen: false).friendUserName=widget.outUri;
-      });
-    }
+    super.initState();
+
   }
 
   @override
@@ -85,8 +80,8 @@ class _SplashScreenState extends State<SplashScreen> {
                           setState(() {
                             isHasIncomeLink=true;
                             DeepLinkName.deepLinkName=Provider.of<IncomeFriend>(context, listen: false).friendUserName as String;
-                            // bufferWidget =
-                            //     ProfileLinkScreen(name: widget.outUri);
+                            bufferWidget =
+                                ProfileLinkScreen(name: Provider.of<IncomeFriend>(context, listen: false).friendUserName as String);
                           });
                         }
                       }

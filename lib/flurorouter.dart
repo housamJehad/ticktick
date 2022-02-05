@@ -1,8 +1,11 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:tic/presentation_layer/screens/about_us_screen/about_us_screen.dart';
+import 'package:tic/presentation_layer/screens/help_screen/help_screen.dart';
 import 'package:tic/presentation_layer/screens/home_screen/home_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/create_account_side/create_account_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/create_account_side/create_account_screen2.dart';
+import 'package:tic/presentation_layer/screens/login_creat_screens/log_in_side/forget_pass_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/log_in_side/log_in_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/log_in_side/login_screen2.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/log_option_screen.dart';
@@ -35,7 +38,8 @@ class Flurorouter {
 
   static final Handler _create2Handler = Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
-      const CreateAccountScreen()); // this one is for one paramter passing...
+      const CreateAccountScreen(),
+  ); // this one is for one paramter passing...
 
   static final Handler _allContactHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
@@ -49,7 +53,28 @@ class Flurorouter {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
         return ProfileLinkScreen(name: params['name'][0],);
       }
-  );// this one is for one paramter passing...
+  );
+  static final Handler _forgetHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+        return const ForgetPassScreen();
+      }
+  );
+  static final Handler _helpHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+        return const HelpScreen();
+      }
+  );
+  static final Handler _aboutHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+        return const AboutUsScreen();
+      }
+  );
+  static final Handler _profileLinkHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+        return ProfileLinkScreen(name: params['username'][0]);
+      }
+  );
+  // this one is for one paramter passing...
 
   // var usersHandler = Handler(handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
   //   return HomeScreen();
@@ -65,6 +90,10 @@ class Flurorouter {
   static void setupRouter(){
     router.define(
       '/',
+      handler: _logOptionHandler,
+    );
+    router.define(
+      '/logOption',
       handler: _logOptionHandler,
     );
     router.define(
@@ -107,7 +136,27 @@ class Flurorouter {
       handler: _editHandler,
       transitionType: TransitionType.fadeIn,
     );
-
+    router.define(
+      '/forget',
+      handler: _forgetHandler,
+      transitionType: TransitionType.fadeIn,
+    );
+    router.define(
+      '/help',
+      handler: _helpHandler,
+      transitionType: TransitionType.fadeIn,
+    );
+    router.define(
+      '/aboutUs',
+      handler: _aboutHandler,
+      transitionType: TransitionType.fadeIn,
+    );
+    router.define(
+      '/profileLink/:username',
+      handler: _profileLinkHandler,
+      transitionType: TransitionType.fadeIn,
+    );
   }
-
+  // '/profileLink/:username'
+  // ForgetPassScreen()
 }

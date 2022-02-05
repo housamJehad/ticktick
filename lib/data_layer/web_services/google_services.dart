@@ -3,11 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic/business_logic_layer/authentication/data/providers/user_provider.dart';
 import 'package:tic/data_layer/models/link.dart';
 import 'package:tic/data_layer/models/user_details.dart';
-import 'package:tic/presentation_layer/widgets/popup/popup.dart';
 
 class GoogleService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -42,13 +40,6 @@ class GoogleService {
 
       final User? user = authResult.user;
       if (user != null) {
-        assert(user.email != null);
-        assert(user.displayName != null);
-        assert(user.photoURL != null);
-        assert(!user.isAnonymous);
-        assert(await user.getIdToken() != null);
-
-
         String? phone = user.phoneNumber ?? "00";
         final User? currentUser = _auth.currentUser;
         assert(user.uid == currentUser?.uid);
@@ -122,18 +113,35 @@ class GoogleService {
 
 
   Future<void> signOutGoogle(context) async {
-    await googleSignIn.signOut();
-    try{
-      await _auth.signOut().then((value) async{
-        final SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
-        sharedPreferences.remove("docId");
-      });
-    }on FirebaseAuthException catch (error){
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const PopUp(errorText: "Log out fail");
-          });
+    try {
+      await _auth.signOut();
+      await googleSignIn.signOut();
+    } catch (e, st) {
+      FlutterError.reportError(FlutterErrorDetails(exception: e, stack: st));
     }
   }
+
+  //
+  // Future<void> signOutGoogle(context) async {
+  //   try{
+  //     await FirebaseAuth.instance.signOut().whenComplete(()async{
+  //       if(FirebaseAuth.instance.currentUser==null){
+  //         print("Log out success");
+  //       }else{
+  //         print("log out fail");
+  //       }
+  //     });
+  //     // await _auth.signOut().then((value) async{
+  //     //   final SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
+  //     //   sharedPreferences.remove("docId");
+  //     // });
+  //   }on FirebaseAuthException catch (error){
+  //     showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return const PopUp(errorText: "Log out fail",type: "error",anotherArguments: "",);
+  //         });
+  //   }
+  // }
+
 }

@@ -1,16 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tic/business_logic_layer/authentication/data/providers/income_friend_provider.dart';
 import 'package:tic/business_logic_layer/authentication/data/providers/user_provider.dart';
 import 'package:tic/constant/my_colors.dart';
-import 'package:tic/data_layer/models/deep_link_name.dart';
 import 'package:tic/data_layer/web_services/facebook_sign_services.dart';
 import 'package:tic/data_layer/web_services/google_services.dart';
 import 'package:tic/presentation_layer/screens/home_screen/home_screen.dart';
 import 'package:tic/presentation_layer/screens/login_creat_screens/create_account_side/user_name_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class OptionButton extends StatefulWidget {
   final String optionText;
@@ -53,10 +50,9 @@ class _OptionButtonState extends State<OptionButton> {
             elevation: 10),
         onPressed: widget.optionType == 0
             ? isLoading
-                ? () {
-                 }
+                ? () {}
                 : () {
-                        FacebookSignServices().signInWithFacebook();
+                    FacebookSignServices().signInWithFacebook();
                   }
             : isLoading
                 ? () {}
@@ -99,48 +95,43 @@ class _OptionButtonState extends State<OptionButton> {
                         .then((QuerySnapshot querySnapshot) {
                       for (var doc in querySnapshot.docs) {
                         if (doc['email'] ==
-                            Provider.of<UserProvider>(context, listen: false).email){
+                            Provider.of<UserProvider>(context, listen: false)
+                                .email) {
                           setState(() {
-                            userDoc=doc;
+                            userDoc = doc;
                           });
                         }
                       }
                     });
-                    if(userDoc['userName'].isEmpty){
-                        setState(() {
-                          haveUserName = false;
-                          Provider.of<UserProvider>(context, listen: false)
-                              .uid = userDoc['uid'];
-                        });
-                    }else{
+                    if (userDoc['userName'].isEmpty) {
                       setState(() {
-                        Provider.of<UserProvider>(context,
-                            listen: false)
+                        haveUserName = false;
+                        Provider.of<UserProvider>(context, listen: false).uid =
+                            userDoc['uid'];
+                      });
+                    } else {
+                      setState(() {
+                        Provider.of<UserProvider>(context, listen: false)
                             .userName = userDoc['userName'];
                         haveUserName = true;
-                        Provider.of<UserProvider>(context, listen: false)
-                            .uid = userDoc['uid'];
+                        Provider.of<UserProvider>(context, listen: false).uid =
+                            userDoc['uid'];
                       });
                     }
 
                     if (user?.email != null) {
                       if (haveUserName) {
-                        final SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
-                        sharedPreferences.setString("docId",
-                            Provider.of<UserProvider>(context,listen: false).uid as String
-                        );
-                        if (Provider.of<IncomeFriend>(context, listen: false).friendUserName!.isNotEmpty) {
-                         setState(() {
-                           DeepLinkName.deepLinkName=Provider.of<IncomeFriend>(context, listen: false).friendUserName as String;
-                         });
-                        }else{
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => const HomeScreen(
-                                whichScreen: 0,
-                              )
-                          )
-                          );
-                        }
+                        final SharedPreferences sharedPreferences =
+                            await SharedPreferences.getInstance();
+                        sharedPreferences.setString(
+                            "docId",
+                            Provider.of<UserProvider>(context, listen: false)
+                                .uid as String);
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => const HomeScreen(
+                                  whichScreen: 0,
+                                )));
                       } else {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) =>

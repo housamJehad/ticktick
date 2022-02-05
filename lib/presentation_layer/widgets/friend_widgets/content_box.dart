@@ -92,7 +92,7 @@ class _ContentBoxState extends State<ContentBox> {
                           .doc(
                           "${Provider.of<UserProvider>(context, listen: false).uid}")
                           .update({'friends': newFriendsIds}).then((value) {
-                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen(whichScreen: 3)), (route) => false);
+                       Navigator.of(context).pushNamed('/home');
                       });
                       setState(() {
                         Provider.of<UserProvider>(context, listen: false).friend =newFriendsIds;

@@ -6,6 +6,7 @@ import 'package:tic/business_logic_layer/authentication/data/providers/user_prov
 import 'package:tic/constant/my_colors.dart';
 import 'package:tic/data_layer/models/freind_data.dart';
 import 'package:tic/presentation_layer/screens/friend_screen/friend_detail_screen1.dart';
+import 'package:tic/presentation_layer/screens/home_screen/home_screen.dart';
 
 class ProfileLinkScreen extends StatefulWidget {
   const ProfileLinkScreen({Key? key, required this.name}) : super(key: key);
@@ -28,7 +29,7 @@ class _ProfileLinkScreenState extends State<ProfileLinkScreen> {
       uid: "",
       bio: "",
       email: "");
-  bool isFriend=false;
+  bool isFriend=false,isTheSameAccount=false;
   String finalName="";
   String friendUid="";
 
@@ -37,7 +38,7 @@ class _ProfileLinkScreenState extends State<ProfileLinkScreen> {
 
     setState(() {
       if(widget.name.isNotEmpty){
-        finalUri= widget.name.substring(32, widget.name.trim().length);
+        finalUri= widget.name.substring(6, widget.name.trim().length);
       }else{
         setState(() {
           finalUri="";
@@ -86,6 +87,16 @@ class _ProfileLinkScreenState extends State<ProfileLinkScreen> {
         }
       }
     }
+    String loginId=Provider.of<UserProvider>(context,listen: false).uid as String;
+    if(linkUser.uid==loginId){
+      setState(() {
+        isTheSameAccount=true;
+      });
+    }else{
+      setState(() {
+        isTheSameAccount=false;
+      });
+    }
   }
 
   @override
@@ -95,7 +106,7 @@ class _ProfileLinkScreenState extends State<ProfileLinkScreen> {
       body: linkUser.name!.isEmpty?const Center(
         child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(MyColors.myOrange)),
-      ):FriendDetailScreen1(friendData: linkUser,type: 1,data:data,isFriend: isFriend,),
+      ):isTheSameAccount?const HomeScreen(whichScreen: 0):FriendDetailScreen1(friendData: linkUser,type: 1,data:data,isFriend: isFriend,),
     );
   }
 }

@@ -78,8 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ?.trim() ==
                         nameController.text.trim() &&
                     imageTemporary.path.toString().isEmpty) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/home', (Route<dynamic> route) => false);
+                  Navigator.of(context).pushNamed('/home');
                 } else {
                   showDialog(
                       context: context,
@@ -109,8 +108,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ?.trim() ==
                               nameController.text.trim() &&
                           imageTemporary.path.toString().isEmpty) {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/home', (Route<dynamic> route) => false);
+                        Navigator.of(context).pushNamed('/home');
+                        // Navigator.of(context).pushNamed(
+                        //     '/home');
                       } else {
                         showDialog(
                             context: context,
@@ -141,8 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ?.trim() ==
                               nameController.text.trim() &&
                           imageTemporary.path.toString().isEmpty) {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/home', (Route<dynamic> route) => false);
+                        Navigator.of(context).pushNamed('/home',);
                       } else {
                         showDialog(
                             context: context,
@@ -269,8 +268,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           'photoUrl': imageUrl
                         },
                       ).then((value) => Navigator.of(context)
-                              .pushNamedAndRemoveUntil(
-                                  '/home', (Route<dynamic> route) => false));
+                              .pushNamed('/home'));
                     },
                     child: Text(
                       "Save",
@@ -290,8 +288,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/home', (Route<dynamic> route) => false);
+                      Navigator.of(context).pushNamed('/home',);
                     },
                     child: Text(
                       "Don't save",
